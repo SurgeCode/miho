@@ -1,12 +1,11 @@
 "use client";
-
-import Chat from "../chat";
 import {
   WalletProvider,
   WalletConnectButton,
 } from "../components/WalletProvider";
 import { Toaster } from "../components/ui/toaster";
 import { PointsDisplay, QuestsPanel } from "../components/rewards";
+import Chat from "@/components/chat";
 
 export default function SyntheticV0PageForDeployment() {
   return (
