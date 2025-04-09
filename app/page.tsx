@@ -5,7 +5,7 @@ import {
 } from "../components/WalletProvider";
 import { Toaster } from "../components/ui/toaster";
 import { PointsDisplay, QuestsPanel } from "../components/rewards";
-import Chat from "@/components/chat";
+import Chat from "@/components/Chat";
 
 export default function SyntheticV0PageForDeployment() {
   return (

@@ -5,6 +5,7 @@ import { SendHorizontal } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Message } from "@/components/Message"
 import { useWallet } from "@suiet/wallet-kit"
+
 export default function Chat() {
   const { address } = useWallet();
   const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
