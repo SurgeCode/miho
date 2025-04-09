@@ -1,0 +1,86 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Sui Agent - Project Structure & Workflow
+
+## Architecture Overview
+This project is a Sui blockchain agent that uses Vercel AI SDK to power a chat interfaceen transactions. The codebase is organized into two main parts:
+- `sui-agent-tools/`: Backend tools that interface with Sui blockchain
+- `chat-ui/`: Frontend Next.js application with a chat interface
+
+## Core Workflow
+1. **User Interaction**: Users chat with AI in the frontend UI
+2. **AI Tool Invocation**: The AI (via Vercel AI SDK) determines when to call blockchain tools
+3. **Tool Execution**: Backend tools create Sui transactions and return results
+4. **UI Rendering**: Frontend renders specialized components for eaonse
+5. **Transaction Execution**: When user approves, transactions are sent to the Sui blockchain
+
+## Key Components
+
+### Backend Tools (`sui-agent-tools/src/`)
+Each tool follows a standard pattern SDK ema
+- Creates a Transaction using `@mysten/sui/transactions`
+- Returns transaction bytes or other data to be rendered in the UI
+- Example tools: `swapTool.ts`, `getAllBalances.ts`, `sendSui.ts`
+
+Example tool pattern:
+```tt { tool } from "ai";
+import { z } from "zod";
+import { Transaction } from "@mysten/sui/transactions";
+
+export const exampleTool = tool({
+  description: "Tool description",
+  parameters: z.object({
+    param1: z.string().describe("Parameter description"),
+    // more parameters...
+  }),
+  execute: async (args) => {
+    // 1. Initialize SDK/client
+    // 2. Build transaction
+    const tx = new Transaction();
+    // 3. Add operations to transaction
+    tx.moveCall({ ... });
+    // 4. Build transaction bytes
+    const txBytes = await tx.build({ client });
+    // 5. Return result
+    return { success: true, transactionBytes: txBytes, otherData: ... };
+  }
+});
+```
+
+### Frontend Components (`chat-ui/components/`)
+- `Message.tsx`: Core component that handles tool invocations and renders tool-specific components
+- `tools/*.tsx`: Tool-specific UI components that render transaction data and allow user approval
+
+### Wallet Integration
+- `WalletProvider.tsx`: Provides wallet connection context
+- `walletUtils.ts`: Contains functions for executing transactions through connected wallets
+
+## Common Development Tasks
+1. **Adding a new blockchain tool**:
+   - Create a new tool file in `sui-agent-tools/src/`
+   - Add the tool to `index.ts` for export
+   - Create a corresponding UI component in `chat-ui/components/tools/`
+   - Add the component to the `Message.tsx` switch statement
+   - Convert to bytes with `tx.build()` for sending to the frontend
+
+3. **Rendering tool results**:
+   - Create a component that accepts the tool result data
+   - Implement UI to display data and transaction approval
+   - Use `executeTransaction` from `walletUtils.ts` to execute approved transactions
+
+## Important Notes
+- Always fetch coin metadata for proper display of token information
+- For proper token rendering, get decimals and icons for each token
+- Remember to support dark mode UI
+- Always rebuild transactions from bytes before sending to wallet
+
+## Backend-Frontend Communication Flow
+1. Tool returns structured data including transaction bytes
+2. Message component identifies tool type from invocation
+3. Corresponding tool component renders UI with results
+4. User approves transaction via component buttons
+5. Transaction bytes are converted back to Transaction object
+6. Wallet executes the transaction
