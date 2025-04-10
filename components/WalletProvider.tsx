@@ -4,10 +4,6 @@ import {
 } from "@suiet/wallet-kit";
 import { useState, useEffect } from "react";
 
-export function WalletProvider({ children }: { children: React.ReactNode }) {
-  return <SuietWalletProvider>{children}</SuietWalletProvider>;
-}
-
 // Define wallet interface
 interface WalletInfo {
   name: string;

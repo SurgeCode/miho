@@ -5,6 +5,8 @@ alwaysApply: true
 ---
 # Sui Agent - Project Structure & Workflow
 
+-DO NOT USE COMMENTS
+
 ## Architecture Overview
 This project is a Sui blockchain agent that uses Vercel AI SDK to power a chat interfaceen transactions. The codebase is organized into two main parts:
 - `sui-agent-tools/`: Backend tools that interface with Sui blockchain
