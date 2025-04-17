@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo, ReactNode, useEffect, useRef, useState } from "react";
 import { Message as AIMessage } from "ai";
 import {
   SendSuiComponent,
@@ -12,42 +12,57 @@ interface MessageProps {
   message: AIMessage;
 }
 
-export const Message: React.FC<MessageProps> = ({ message }) => {
-  const hasTools =
-    message.toolInvocations && message.toolInvocations.length > 0;
-  let toolComponent = null;
-  if (hasTools && message.toolInvocations?.[0]) {
-    const tool = message.toolInvocations[0];
+type Part = {
+  type: string;
+  text?: string;
+  toolInvocation?: any;
+};
 
-    if (tool.state === "result" && tool.result) {
-      console.log(tool.result);
-      switch (tool.toolName) {
-        case "sendSui":
-          toolComponent = <SendSuiComponent data={tool.result} />;
-          break;
-        case "listCoins":
-          toolComponent = <ListCoinsComponent data={tool.result} />;
-          break;
-        case "swap":
-          toolComponent = <SwapToolComponent data={tool.result} />;
-          break;
-        case "getAllBalances":
-          toolComponent = <GetAllBalancesComponent data={tool.result} />;
-          break;
-        case "liquidStakingTool":
-          toolComponent = <LiquidStakingComponent data={tool.result} />;
-          break;
-        default:
-          console.log("No component found for tool:", tool.toolName);
-          toolComponent = (
-            <div>
-              <pre className="bg-gray-900 p-2 rounded text-xs text-white/80 overflow-x-auto">
-                {JSON.stringify(tool.result, null, 2)}
-              </pre>
-            </div>
-          );
+
+export const Message = memo(function Message({ message }: MessageProps) {
+  if (message.role === "system") {
+    return null;
+  }
+
+  const hasParts = message.parts && message.parts.length > 0;
+
+  let toolComponent: ReactNode = null;
+
+  if (!toolComponent && hasParts && message.parts) {
+    message.parts.forEach((part: Part) => {
+      if (part.type === "tool-invocation") {
+        const toolInvocation = part.toolInvocation;
+        if (toolInvocation.state === "result" && toolInvocation.result) {
+          switch (toolInvocation.toolName) {
+            case "sendSui":
+              toolComponent = <SendSuiComponent data={toolInvocation.result} />;
+              break;
+            case "listCoins":
+              toolComponent = <ListCoinsComponent data={toolInvocation.result} />;
+              break;
+            case "swap":
+              toolComponent = <SwapToolComponent data={toolInvocation.result} />;
+              break;
+            case "getAllBalances":
+              toolComponent = <GetAllBalancesComponent data={toolInvocation.result} />;
+              break;
+            case "liquidStaking":
+              toolComponent = <LiquidStakingComponent data={toolInvocation.result} />;
+              break;
+            default:
+              if (!toolComponent) {
+                toolComponent = (
+                  <div>
+                    <pre className="bg-gray-900 p-2 rounded text-xs text-white/80 overflow-x-auto">
+                      {JSON.stringify(toolInvocation.result, null, 2)}
+                    </pre>
+                  </div>
+                );
+              }
+          }
+        }
       }
-    }
+    });
   }
 
   return (
@@ -58,7 +73,9 @@ export const Message: React.FC<MessageProps> = ({ message }) => {
             You:
           </div>
           <div className="flex-1">
-            <p className="text-white text-lg pl-7">{message.content}</p>
+            <p className="text-white text-lg pl-7">
+              {message.content}
+            </p>
           </div>
         </div>
       ) : (
@@ -72,15 +89,15 @@ export const Message: React.FC<MessageProps> = ({ message }) => {
               />
             </div>
             <div className="flex-1">
-              <p className="text-white text-lg">{message.content}</p>
+              {message.content}
             </div>
           </div>
 
-          {hasTools && toolComponent && (
+          {(hasParts && toolComponent) && toolComponent && (
             <div className="mt-2 w-full">{toolComponent}</div>
           )}
         </div>
       )}
     </div>
   );
-};
+});

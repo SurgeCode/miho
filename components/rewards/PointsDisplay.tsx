@@ -1,6 +1,6 @@
 import React from "react";
 
-const GemIcon = () => (
+const BubbleIcon = () => (
   <svg
     width="18"
     height="18"
@@ -8,18 +8,18 @@ const GemIcon = () => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <path d="M12 2L2 9L12 22L22 9L12 2Z" fill="#F5B133" fillOpacity="0.9" />
-    <path d="M12 2L2 9H22L12 2Z" fill="#F5B133" fillOpacity="1" />
+    <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.5" fill="currentColor" fillOpacity="0.3" />
+    <path d="M14.5 9.5C14.5 10.3284 13.8284 11 13 11C12.1716 11 11.5 10.3284 11.5 9.5C11.5 8.67157 12.1716 8 13 8C13.8284 8 14.5 8.67157 14.5 9.5Z" fill="white" fillOpacity="0.8"/>
   </svg>
 );
 
-export const PointsDisplay: React.FC = () => {
+export const BubblesDisplay: React.FC = () => {
   return (
-    <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-black border border-white/20 shadow-md">
-      <GemIcon />
-      <span className="text-white text-sm font-medium">1000 Gems</span>
+    <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-black border border-white/20 shadow-md text-blue-300">
+      <BubbleIcon />
+      <span className="text-sm font-medium">0 Bubbles</span>
     </div>
   );
 };
 
-export default PointsDisplay;
+export default BubblesDisplay;

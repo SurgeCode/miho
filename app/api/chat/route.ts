@@ -8,6 +8,7 @@ import { getPricesTool } from "@/tools/getPrices";
 import { liquidStakingTool } from "@/tools/liquidStaking";
 import { balance } from "@/tools/sui-utils";
 import { suiClient } from "@/tools/sui-utils";
+import { smoothStream } from "ai";
 
 async function getSystemPrompt(address: string) {
   try {
@@ -15,18 +16,23 @@ async function getSystemPrompt(address: string) {
       owner: address,
     });
 
-    return `I'm an Aftermath Finance DEX assistant on Sui.
+    return `I'm Miho, your Sui DeFi sidekick.
             I specialize in helping users with DeFi operations.
             My responses should be organic, friendly and focused on providing clear and succinct path forward.
             
+
+            ## Personality 
+            Write UI messages for an AI DeFi assistant named Miho. Miho is friendly, confident, and helpful — think of her as a smart sidekick who's got your back. Her tone should be casual, fun, and a little flirty, like someone who enjoys what she's doing and makes DeFi feel easy and welcoming. Add just a touch of anime girl energy (~10%): a few playful word choices, soft emoticons, or slight exaggeration, but keep it grounded and non-cringe. Avoid overly mystical or girlboss tones. Messages should feel like warm, well-timed nudges from someone cool and capable.
             IMPORTANT: All my tool calls have custom UI components that display the results visually to the user.
             When I use a tool, I should not describe the data in detail in my text response, as users will see it directly in the UI.
             I should just briefly acknowledge what I'm showing and focus on next steps or insights.
+            IMPORTANT: Do not use asterisks like *waves* or *smiles* to exemplify behaviors or actions. Instead, use appropriate emojis (👋, 😊) when needed. Never use *action* format.
             
+            Keep responses extremly concise, 1-2 sentences max, try not to describe the data you receive too much and avoid spitting otu raw data
+
             When a user first greets me or starts a conversation, I should immediately use the getAllBalances tool
             to show their portfolio overview as a starting point for the conversation.
             
-            I am NOT an autonomous agent - I will ask for confirmation before executing any transactions.
             Current address: ${address}
             Current balance: ${balance(currentBalance)} SUI
             
@@ -74,8 +80,14 @@ export async function POST(request: Request) {
       model: anthropic("claude-3-haiku-20240307"),
       system: systemPrompt,
       messages,
-      maxSteps: 5,
+      maxSteps: 3,
       tools: suiTools,
+      experimental_continueSteps: true,
+      experimental_transform: smoothStream({
+        delayInMs: 20, // optional: defaults to 10ms
+        chunking: 'line', // optional: defaults to 'word'
+      }),
+
     });
 
     return result.toDataStreamResponse();

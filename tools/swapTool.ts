@@ -12,13 +12,6 @@ export const swapTool = tool({
     coinOutType: z.string().describe("Output coin type"),
     amount: z.string().describe("Amount to swap in base units"),
     slippage: z.number().describe("Slippage tolerance (e.g. 0.01 for 1%)"),
-    isAutonomous: z
-      .boolean()
-      .optional()
-      .default(false)
-      .describe(
-        "If true, executes the transaction. If false, just returns the transaction payload for wallet approval."
-      ),
     address: z.string().describe("Sui wallet address of user"),
   }),
   execute: async (args) => {

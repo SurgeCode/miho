@@ -5,13 +5,13 @@ interface BalanceItem {
   totalBalance: string;
   coinObjectCount: number;
   normalizedBalance: number;
-  usdValue?: number; // New field for USD value
+  usdValue?: number; 
 }
 
 interface GetAllBalancesComponentProps {
   data: {
     balances: BalanceItem[];
-    totalUsdValue?: number; // New field for total USD value
+    totalUsdValue?: number; 
   };
 }
 
@@ -21,21 +21,17 @@ export const GetAllBalancesComponent: React.FC<
   const balances = data?.balances || [];
   const totalUsdValue = data?.totalUsdValue || 0;
 
-  // Filter out zero balances and sort by USD value (highest first) if available, otherwise by token amount
   const sortedBalances = useMemo(() => {
     return [...balances]
-      .filter((coin) => coin.normalizedBalance > 0.000001) // Filter out insignificant balances
+      .filter((coin) => coin.normalizedBalance > 0.000001)
       .sort((a, b) => {
-        // Sort by USD value if available
         if (a.usdValue && b.usdValue) {
           return b.usdValue - a.usdValue;
         }
-        // Fallback to token amount
         return b.normalizedBalance - a.normalizedBalance;
       });
   }, [balances]);
 
-  // Calculate total portfolio value (tokens)
   const totalValue = useMemo(() => {
     return sortedBalances.reduce(
       (sum, coin) => sum + coin.normalizedBalance,
@@ -68,7 +64,6 @@ export const GetAllBalancesComponent: React.FC<
     }
   };
 
-  // Basic coin logo mapping - in a real app, this would come from an API
   const getCoinLogo = (symbol: string) => {
     if (symbol === "SUI")
       return "https://s2.coinmarketcap.com/static/img/coins/64x64/20947.png";
@@ -79,7 +74,6 @@ export const GetAllBalancesComponent: React.FC<
     return undefined;
   };
 
-  // Get color for progress bar based on coin symbol
   const getProgressColor = (symbol: string) => {
     if (symbol === "SUI" || symbol.includes("SUI")) return "bg-blue-500";
     if (symbol === "USDC" || symbol === "USDT" || symbol.includes("USD"))
@@ -90,7 +84,6 @@ export const GetAllBalancesComponent: React.FC<
     return "bg-purple-500";
   };
 
-  // Format address to prevent overflow (first 8 chars + ... + last 8 chars)
   const formatCoinType = (coinType: string) => {
     const parts = coinType.split("::");
     if (parts.length >= 1) {

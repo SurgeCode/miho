@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^1.2.0",
-    "@ai-sdk/react": "^1.2.0",
+    "@ai-sdk/react": "^1.2.9",
     "@hookform/resolvers": "^3.9.1",
     "@mysten/sui": "^1.21.2",
     "@mysten/sui.js": "^0.54.1",
