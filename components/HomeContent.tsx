@@ -14,46 +14,26 @@ export default function HomeContent() {
     const [error, setError] = useState<string | null>(null);
     const { address, connected, connecting } = useWallet();
   
-    // Safety timeout to prevent infinite loading
     useEffect(() => {
-      const safetyTimer = setTimeout(() => {
-        if (isLoading) {
-          console.log("Safety timeout triggered - preventing infinite loading");
-          setIsLoading(false);
-          setError("Connection timed out. Please refresh and try again.");
-        }
-      }, 10000); // 10 seconds timeout
-      
-      return () => clearTimeout(safetyTimer);
-    }, [isLoading]);
-  
-    useEffect(() => {
-      console.log("Wallet state:", { connecting, connected, address, isVerified });
-      
       if (connecting) {
-        console.log("Wallet is connecting");
         return;
       }
       
       if (!connected || !address) {
-        console.log("Wallet not connected or no address");
         setIsLoading(false);
         return;
       }
       
       if (isVerified === true) {
-        console.log("User already verified");
         setIsLoading(false);
         return;
       }
-      
+
       const checkVerification = async () => {
-        console.log("Checking verification for address:", address);
         setIsLoading(true); 
         setError(null);
         
         try {
-          console.log("Fetching from API");
           const response = await fetch(`/api/verify-invite?address=${address}`, {
             method: 'GET',
             headers: {
@@ -69,7 +49,6 @@ export default function HomeContent() {
           }
           
           const data = await response.json();
-          console.log("API response:", data);
           setIsVerified(data.verified);
         } catch (error) {
           console.error('Failed to check verification:', error);
@@ -79,13 +58,8 @@ export default function HomeContent() {
           setIsLoading(false);
         }
       };
-      
-      // Small delay to ensure wallet is fully connected
-      const timer = setTimeout(() => {
-        checkVerification();
-      }, 500);
-      
-      return () => clearTimeout(timer);
+
+      checkVerification();
     }, [connecting, connected, address, isVerified]);
     
     const handleVerified = () => {
