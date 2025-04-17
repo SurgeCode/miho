@@ -83,7 +83,7 @@ export default function HomeContent() {
     if (connecting || isLoading) {
       return (
         <div className="flex items-center justify-center min-h-screen bg-black">
-          <div className="text-white">Loading... {connecting ? '(Connecting to wallet)' : '(Verifying)'}</div>
+          <div className="text-white">Loading...</div>
         </div>
       );
     }
