@@ -7,10 +7,17 @@ import { useEffect, useRef } from "react"
 
 export default function Chat() {
   const { address } = useWallet();
+    
   const { messages, input, handleInputChange, handleSubmit, isLoading, append  } = useChat({
     api: "/api/chat",
-    body: { address },
+    body: { 
+      address,
+    },
     experimental_throttle: 50,
+    onToolCall: async ({ toolCall }: { toolCall: any }) => {
+ 
+      return null;
+    }
   });
 
   const initialized = useRef(false);
@@ -26,7 +33,7 @@ export default function Chat() {
       <div className="flex-1 overflow-y-auto px-4">
         <div className="mx-auto w-full pb-3 max-w-[700px]">
           {messages.slice(1).map((message) => (
-            <Message key={message.id} message={message} />
+            <Message key={message.id} message={message as any} />
           ))}
         </div>
       </div>
