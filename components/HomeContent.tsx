@@ -103,9 +103,9 @@ export default function HomeContent() {
           <WalletConnectButton />
         </div>
 
-        <div className="flex-grow overflow-hidden">
+        {/* <div className="flex-grow overflow-hidden">
           <Chat />
-        </div>
+        </div> */}
 
         <Toaster />
       </div>
