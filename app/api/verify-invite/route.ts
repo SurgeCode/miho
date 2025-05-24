@@ -3,6 +3,8 @@ import { db } from "@/lib/db";
 import { eq } from "drizzle-orm";
 import { mihoInvited } from "@/lib/schema";
 
+const INVITE_CODE = process.env.MIHO_INVITE_CODE;
+
 export async function POST(req: NextRequest) {
   try {
     const { inviteCode, address } = await req.json();
@@ -20,7 +22,7 @@ export async function POST(req: NextRequest) {
     if (invited.length > 0) {
       return NextResponse.json({ success: true });
     }
-    if (inviteCode === "miho-beta") {
+    if (inviteCode === INVITE_CODE) {
       await db.insert(mihoInvited).values({ address });
       return NextResponse.json({ success: true });
     }
